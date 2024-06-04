@@ -3,7 +3,7 @@ name: Deploy API by TVD
 jobs:
   web-deloy:
     name: Deploy
-    runs-on: ubutu-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Get latest code
       uses: actions/checkout@v3
