@@ -119,22 +119,22 @@
                                 $updatePitchesBooking->bind_param('ssi', $BankTranNo, $TransactionNo, $idPitchesBooking);
                                 $updatePitchesBooking->execute();
                                 if ($updatePitchesBooking->affected_rows == 0) {
-                                    echo "<span style='color:red'>Co loi trong luc thanh toan, vui long lien he admin</span>";
+                                    echo "<span style='color:red'>Co loi trong luc thanh toan, vui long lien he admin. Chờ 5s - 10s để hệ thống đưa bạn trở về.</span>";
                                 } else {
-                                    echo "<span style='color:blue'>GD Thanh cong, vui long cho giay lat.....</span>";
+                                    echo "<span style='color:blue'>GD Thanh cong, vui long cho giay lat...... Chờ 5s - 10s để hệ thống đưa bạn trở về.</span>";
                                 }
                             } else {
                                 $updatePitchesBooking = $conn->prepare("UPDATE pitchesbooking SET status = 2 WHERE id = ?");
                                 $updatePitchesBooking->bind_param('i', $idPitchesBooking);
                                 $updatePitchesBooking->execute();
                                 if ($updatePitchesBooking->affected_rows == 0) {
-                                    echo "<span style='color:red'>GD Khong thanh cong</span>";
+                                    echo "<span style='color:red'>GD Khong thanh cong. Chờ 5s - 10s để hệ thống đưa bạn trở về.</span>";
                                 } else {
-                                    echo "<span style='color:red'>Co loi trong luc thanh toan.</span>";
+                                    echo "<span style='color:red'>Co loi trong luc thanh toan. Chờ 5s - 10s để hệ thống đưa bạn trở về.</span>";
                                 }
                             }
                         } else {
-                            echo "<span style='color:red'>Chu ky khong hop le</span>";
+                            echo "<span style='color:red'>Chu ky khong hop le. Chờ 5s - 10s để hệ thống đưa bạn trở về.</span>";
                         }
                         ?>
 
