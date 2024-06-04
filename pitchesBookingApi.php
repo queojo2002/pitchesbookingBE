@@ -34,8 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo (new ModelReturn(0, "Vui lòng nhập đầy đủ thông tin.", null))->toJson();
         exit();
     }
-    if ($timeStart < time() || $timeEnd < time()) {
-        echo (new ModelReturn(0, "Thời gian không hợp lệ.", null))->toJson();
+    if (date('Y-m-d', strtotime("+5 minutes", $timeCreate)) < date('Y-m-d', $timeStart)) {
+        echo (new ModelReturn(0, "Thời gian đặt sân không hợp lệ.", null))->toJson();
         exit();
     }else if ($timeEnd - $timeStart < 3600) {
         echo (new ModelReturn(0, "Thời gian đặt sân phải lớn hơn 1 tiếng.", null))->toJson();
@@ -51,13 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo (new ModelReturn(0, "Sân không tồn tại hoặc đã bị khóa.", null))->toJson();
         exit();
     }
-    $amount = ($timeEnd - $timeStart) / 3600 * $getPitches['price'];
+    $amount = round((($timeEnd - $timeStart) / 3600) * $getPitches['price']);
 
 
     $timeStartNew = date('Y-m-d H:i:s', $timeStart);
     $timeEndNew = date('Y-m-d H:i:s', $timeEnd);
 
-    $getPitchesBooking = $conn->prepare("SELECT * FROM pitchesbooking WHERE pitchesID = ?");
+    $getPitchesBooking = $conn->prepare("SELECT * FROM pitchesbooking WHERE pitchesID = ? AND status <> 2");
     $getPitchesBooking->bind_param('s', $pitchesID);
     $getPitchesBooking->execute();
     $getPitchesBooking = $getPitchesBooking->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -100,18 +100,84 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $insertPitchesBooking = $conn->prepare("INSERT INTO pitchesbooking (userID, pitchesID, amount, status, timeStart, timeEnd, timeCreate) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $status = 0;
-    $insertPitchesBooking->bind_param('iiiiiii', $userID, $pitchesID, $amount, $status, $timeStart, $timeEnd, $timeCreate);
-    $insertPitchesBooking->execute();
-    echo (new ModelReturn(1, "Đặt sân thành công.", null))->toJson();
-
-    
 
 
+    $conn->begin_transaction();
 
+    try {
+        $insertPitchesBooking = $conn->prepare("INSERT INTO pitchesbooking (userID, pitchesID, amount, status, timeStart, timeEnd, timeCreate) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $status = 0;
+        $insertPitchesBooking->bind_param('iiiiiii', $userID, $pitchesID, $amount, $status, $timeStart, $timeEnd, $timeCreate);
+        $insertPitchesBooking->execute();
 
+        if ($insertPitchesBooking->affected_rows == 0) {
+            throw new Exception("Đặt sân thất bại.");
+        } else {
+            $vnp_TxnRef = $conn->insert_id;
+            $vnp_Amount = $amount; // Số tiền thanh toán
+            $vnp_Locale = "vn"; // Ngôn ngữ chuyển hướng thanh toán
+            $vnp_BankCode = ""; // Mã phương thức thanh toán
+            $vnp_IpAddr = $_SERVER['REMOTE_ADDR']; // IP Khách hàng thanh toán
 
+            $inputData = array(
+                "vnp_Version" => "2.1.0",
+                "vnp_TmnCode" => $vnp_TmnCode,
+                "vnp_Amount" => $vnp_Amount * 100,
+                "vnp_Command" => "pay",
+                "vnp_CreateDate" => date('YmdHis'),
+                "vnp_CurrCode" => "VND",
+                "vnp_IpAddr" => $vnp_IpAddr,
+                "vnp_Locale" => $vnp_Locale,
+                "vnp_OrderInfo" => "Thanh toan GD Dat San:" . $vnp_TxnRef,
+                "vnp_OrderType" => "other",
+                "vnp_ReturnUrl" => $vnp_Returnurl,
+                "vnp_TxnRef" => $vnp_TxnRef,
+                "vnp_ExpireDate" => $expire,
+            );
+
+            if (isset($vnp_BankCode) && $vnp_BankCode != "") {
+                $inputData['vnp_BankCode'] = $vnp_BankCode;
+            }
+
+            ksort($inputData);
+            $query = "";
+            $i = 0;
+            $hashdata = "";
+            foreach ($inputData as $key => $value) {
+                if ($i == 1) {
+                    $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+                } else {
+                    $hashdata .= urlencode($key) . "=" . urlencode($value);
+                    $i = 1;
+                }
+                $query .= urlencode($key) . "=" . urlencode($value) . '&';
+            }
+
+            $vnp_Url = $vnp_Url . "?" . $query;
+            if (isset($vnp_HashSecret)) {
+                $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+                $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
+            }
+
+            $updatePitchesBooking = $conn->prepare("UPDATE pitchesbooking SET URLPayment = ? WHERE id = ?");
+            $updatePitchesBooking->bind_param('si', $vnp_Url, $vnp_TxnRef);
+            $updatePitchesBooking->execute();
+
+            if ($updatePitchesBooking->affected_rows == 0) {
+                throw new Exception("Cập nhật URL thanh toán thất bại.");
+            }
+
+            $conn->commit();
+            echo (new ModelReturn(1, "Đặt sân thành công.", [
+                "url" => $vnp_Url,
+                "id" => $vnp_TxnRef
+                ]))->toJson();
+        }
+    } catch (Exception $e) {
+        $conn->rollback();
+        echo (new ModelReturn(0, $e->getMessage(), null))->toJson();
+    }
+    $conn->close();
 
 
 }else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -133,7 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $getPitchesBooking = $conn->prepare("SELECT pitchesbooking.*, users.fullname, users.email FROM pitchesbooking 
                                                     INNER JOIN users ON users.id = userID 
                                                     INNER JOIN pitches ON pitches.id = pitchesID 
-                                                    WHERE pitchesID = ?");
+                                                    WHERE pitchesID = ? AND pitchesbooking.status = 1");
         $getPitchesBooking->bind_param('i', $id);
         $getPitchesBooking->execute();
         $getPitchesBooking = $getPitchesBooking->get_result()->fetch_all(MYSQLI_ASSOC);
