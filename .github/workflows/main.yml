@@ -1,0 +1,16 @@
+on: push
+name: Deploy API by TVD
+jobs:
+  web-deloy:
+    name: Deploy
+    runs-on: ubutu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v3
+
+    - name: Sync file
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ftp.vanduc.top
+        username: ${{secrets.ftp_username}}
+        password: ${{secrets.ftp_password}}
