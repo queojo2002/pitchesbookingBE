@@ -6,6 +6,7 @@ class ModelAuthenication {
     private $isAdmin = false;
     private $isLogin = false;
     private $message = null;
+    private $userID = null;
 
     public function __construct($secret_Key, $method_encode) {
         try {
@@ -26,6 +27,7 @@ class ModelAuthenication {
                         $this->message = (new ModelReturn(1, "Access Token hợp lệ", $userFromAccessToken))->toJson();
                         $this->isLogin = true;
                         $this->isAdmin = ($userFromAccessToken['role'] == "admin");
+                        $this->userID = $userFromAccessToken['id'];
                     }
                 }
             }
@@ -52,6 +54,10 @@ class ModelAuthenication {
 
     public function isLogin() {
         return $this->isLogin;
+    }
+
+    public function getUserID() {
+        return $this->userID;
     }
 }
 

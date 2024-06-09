@@ -1,6 +1,7 @@
 {
     "require": {
         "firebase/php-jwt": "^6.10",
-        "paragonie/sodium_compat": "^1.21"
+        "paragonie/sodium_compat": "^1.21",
+        "google/auth": "^1.40"
     }
 }

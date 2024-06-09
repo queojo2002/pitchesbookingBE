@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "pitchbooking-b7a05",
+  "private_key_id": "63143e0f5acd9a9fe0e112092eeacdd0d0466bdc",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC31KQCkqz25eA9\nXfVftSWHq7ohucAmgLUZ90MFjBlpMkVYt+ZVg4BQHtxFrLxRkhifrUcU0+FKGGji\nLNk16mYca9jXLVsCzT21eyQM9/QZdimNZLaUnj9fTFMJrGDOTEI6Xf8WQlCkL9Nx\niJwWVe5QnL36pRXkO0+LKJtXJFLjyoqN3jYcdYp8ek+WkgVYbEvSimjQSLBI3w4C\n/YVRMUVkTKKDMs96qgMg8Ce+YedTuJNdGL+oI3VHg8ag92EM9ji6gKmJLjf9PRil\nx7mjYx3Y++8mbq9rUgbAIHwxU7DcG5G2om7wZfn1dqWoaBTRo9iWhnXiRjATHprL\nkxp8IkbdAgMBAAECggEALQaUNV0fqEmdpupAk3SXAKf7Kw+IFOYpdXaun8k04CNE\nAPrqG7/dycIFSbuJVKFoDpQueNd8st1PszYw7Ze/8u4namzdgc4rcyv6JIMG8sWS\nX+NvJO+trfXP0Oq7u0vKXOlw9U7A2bYtH/3J3V6mxG/fyGhu+Dveu8LyaWGoO8qR\nvbNzDfar72HTExvawHLZfjXRAb2tjmgI6YcxWHLklu45AxG9HzgclpCptecmIwfD\n7ZUg9D0nylXi6xekFxkjKOQPMY84fMh6oeHc/bLrIKnWX4EwoHPDeHrxLxLadzc1\nL7ks3mlCrzRnu/wOYKaj9H8LEw5Yixx/F7qHl9QpMQKBgQDlaVtffVzrarbacwk9\nNUVCcf3PeKMsYgH2Hjb54VchIaibGf1lOeDxg/v1GIYA38plZZYq/C1H+lA7WMBJ\nzMd4vUX75YsP/2W+1ZIa9EUD/CrKd/0lQ+HQDVG4/d8i7JWjVl9vcJ85ksHV3QCG\nf7NjLX4RnEwh/N30wWUXh4Oh8wKBgQDNIuW0eEhfLh+I9qQu1rQNH78y9lHk7dr/\nwU4fQBFORUZyLebBcT+I7S9kntP9QYD7rT0R8FBQx0YWdkvmeCxKMg/fPnzIv8Fq\nXJv2FkWTVJquAXHbRat6cUENbGvq+eUKJJPxBlhPFRXLIafSP3yqTuTNXsT8ZKMb\n/SPhG5nX7wKBgQDZ37pwsN2rkvi/9Jqkr8/sL9htztOhVh8owD9UB8e45n97di5q\nkZJprQCAIF87u048CEOa5U6X2kmSY1KThFE5AQDTH4h3lAXsPGb7BFv7UeTNzzDy\n0EpITi3789eUEn521pPigWImypMeajqSgfs7SLw/O2IusTmWtoks1H2WMwKBgQCg\nF14BK+X/MfW2ZBXZ4AGARIho80cSTHafJnMbfFqFJRdHQH9X9FPLPp+//RwgB6Dr\nyVVhzJRBlmMiYIv3f03BUbSFWzTzToNZyJCGyvbddieJKON8ZrDey8gi+7x1EzUm\nZ0l1zqfYf/IUJ13bfWSDXTK++/jrqHaK/1Gi+nFjzQKBgDSGgaN/rqGgYMQDjbnZ\nxQqGZvJzcTXuNQvmAT3nUV9T9q+zXTZ22HIG8p9DsGD3yEGZ7mk2qXzCH8GaqOhd\nJZOvJSgYFHTFPxixgCWB7W9yZbTxNAiGFgcXLEmS+CQIvMftW2eLwlu8YpVBPHHo\n4Li8MG7ahz6tzgp4jbpQh+Zq\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-bxa1f@pitchbooking-b7a05.iam.gserviceaccount.com",
+  "client_id": "100099893062715328284",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-bxa1f%40pitchbooking-b7a05.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

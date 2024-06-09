@@ -99,7 +99,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
         $updateUser->bind_param("sssss", $fullname, $phone, $address, $imageURL, $userFromAccessToken['email']);
         $updateUser->execute();
         echo (new ModelReturn(1, "Cập nhật thông tin User thành công", null))->toJson();
-    }else {
+    }else if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+        $data = json_decode(file_get_contents('php://input'), true);
+        if ($data == null) {
+            echo (new ModelReturn(0, "Dữ liệu không hợp lệ.", null))->toJson();
+            exit();
+        }
+        if (!isset($data['tokenFCM'])) {
+            echo (new ModelReturn(0, "Dữ liệu không hợp lệ.", null))->toJson();
+            exit();
+        }
+        $tokenFCM = $data['tokenFCM'];
+        if (is_array($tokenFCM)) {
+            echo (new ModelReturn(0, "Dữ liệu không hợp lệ.", null))->toJson();
+            exit();
+        }
+        $updateTokenFCM = $conn->prepare("UPDATE users SET tokenFCM = ? WHERE id = ?");
+        if (!$updateTokenFCM) {
+            echo (new ModelReturn(0, "Có lỗi khi truy vấn: " . $conn->error, null))->toJson();
+            exit();
+        }
+        $id = $userFromAccessToken['id'];
+        $updateTokenFCM->bind_param("ss", $tokenFCM, $id);
+        $updateTokenFCM->execute();
+        if ($updateTokenFCM->affected_rows > 0) {
+            echo (new ModelReturn(1, "Cập nhật tokenFCM thành công", null))->toJson();
+        }else {
+            echo (new ModelReturn(0, "Cập nhật tokenFCM thất bại", null))->toJson();
+        }
+
+
+    }
+    else {
         echo (new ModelReturn(0, "Phương thức không đúng.", null))->toJson();
     }
     
